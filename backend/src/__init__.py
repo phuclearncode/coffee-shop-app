@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from src.db.main import init_db
+from src.db.main import init_postgre_db, init_mongo_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db()
+    await init_postgre_db()
     yield
     print("Lifespan : Shutting down")
 
