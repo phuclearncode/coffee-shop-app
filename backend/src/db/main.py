@@ -5,6 +5,12 @@ from sqlalchemy.orm import sessionmaker
 from beanie import init_beanie, WriteRules
 from motor.motor_asyncio import AsyncIOMotorClient
 from src.config import Config
+from src.users.models import User
+from src.payment.models import Payment
+from src.orders.models import Order
+from src.order_detail.models import OrderDetail
+from src.product_variants.models import ProductVariant
+from src.products.models import Product
 
 MONGODB_URL = Config.MONGODB_URL
 POSTGRE_URL = f"postgresql+asyncpg://{Config.POSTGRE_URL}"
