@@ -32,7 +32,7 @@ class User(SQLModel, table=True):
         max_length=100,
     )
     role: str = Field(
-        max_length=20,
+        max_length=20, default="user", nullable=False
     )
     is_verified: bool = Field(default=False)
     created_at: datetime = Field(

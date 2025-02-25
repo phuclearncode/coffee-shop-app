@@ -37,3 +37,8 @@ async def init_postgre_db():
         await conn.run_sync(SQLModel.metadata.create_all)
         print("Connected to PostgreSQL!")
 
+
+async def get_async_session():
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with async_session() as session:
+        yield session
