@@ -27,7 +27,10 @@ class UserService:
     
     async def get_user_by_email(self,db: AsyncSession, email: str):
         result = await db.execute(select(User).where(User.email == email))
-        return result.one_or_none()
+        user = result.scalars().first()
+        if result is None:
+            return None
+        return user
     # scalars().first() for what??
 
     async def existed_user(self,db: AsyncSession, email: str):
