@@ -3,6 +3,7 @@ from fastapi import Depends
 from src.users.utils import decode_access_token
 from fastapi.exceptions import HTTPException
 from starlette.status import HTTP_403_FORBIDDEN
+from src.db.redis import check_jti_in_blacklist
 
 class BearerHTTPBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
@@ -15,6 +16,9 @@ class BearerHTTPBearer(HTTPBearer):
         if not check_valid_token:
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Not authenticated")
         decoded_credential = decode_access_token(token)
+        
+        if check_jti_in_blacklist(decoded_credential["jti"]):
+            raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="Token has been revoked")
 
         return decoded_credential
     
