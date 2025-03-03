@@ -8,6 +8,8 @@ from src.users.models import User
 import uuid
 from datetime import timedelta
 from fastapi.responses import JSONResponse
+from src.users.dependency import BearerHTTPBearer, RefreshToken, AccessToken
+from datetime import datetime, timedelta
 
 user_router = APIRouter(
     prefix="/users",
@@ -15,9 +17,12 @@ user_router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 user_service = UserService()
+token_bearer = BearerHTTPBearer()
+refresh_token = RefreshToken()
+access_token = AccessToken()
 
 @user_router.get("/all")
-async def get_all_users( db: AsyncSession = Depends(get_async_session)):
+async def get_all_users( db: AsyncSession = Depends(get_async_session), token: str = Depends(token_bearer)):
     result = await user_service.get_all_users(db=db)
     if result is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Don't have any user")
@@ -25,7 +30,7 @@ async def get_all_users( db: AsyncSession = Depends(get_async_session)):
 
 # should have rbac or user can get data of each other
 @user_router.get("/{user_id}")
-async def get_user_by_id(user_id: str, db: AsyncSession = Depends(get_async_session)):
+async def get_user_by_id(user_id: str, db: AsyncSession = Depends(get_async_session), token: str = Depends(token_bearer)):
     user = await user_service.get_user_by_id(db=db, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
@@ -39,7 +44,7 @@ async def create_user(user: UserRegisterModel, db: AsyncSession = Depends(get_as
     
 
 @user_router.delete("/{user_id}")
-async def delete_user(user_id: str, db: AsyncSession = Depends(get_async_session)):
+async def delete_user(user_id: str, db: AsyncSession = Depends(get_async_session), token: str = Depends(token_bearer)):
     return await user_service.delete_user(db=db, user_id=user_id)
 
 @user_router.post("/login")
@@ -69,3 +74,12 @@ async def login(user_login: UserLoginModel, db: AsyncSession = Depends(get_async
                                     )
 
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+
+@user_router.get("/refresh-token")
+async def refresh_token(token: str = Depends(refresh_token)):
+    expiry_time = token["exp"]
+    if expiry_time < datetime.now():
+        new_access_token = create_access_token(user_data=token["user"], refresh_token=False, expires_delta=timedelta(minutes=60))
+        return JSONResponse(content={"access_token": new_access_token})
+
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired")
