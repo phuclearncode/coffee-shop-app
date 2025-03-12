@@ -1,0 +1,1 @@
+Đây là file dành cho việc xử lý thao tác với server để lấy dữ liệu

@@ -2,6 +2,7 @@
 import React from 'react';
 import { SafeAreaView, View, TextInput, TouchableOpacity, Text, ImageBackground} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 
 const SignInScreen = () => {
       const navigation = useNavigation();
@@ -35,7 +36,7 @@ const SignInScreen = () => {
         </Text>
         <TouchableOpacity
           className="bg-[#C67C4E] mt-6 p-4 rounded-lg"
-          onPress={() => {}}
+          onPress={() => {navigation.replace('Tabs')}}
         >
           <Text className="text-white text-xl font-[Sora-SemiBold] text-center">Sign In</Text>
         </TouchableOpacity>
