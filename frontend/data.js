@@ -3,7 +3,7 @@ export const products = [
       product_id: 1,
       name: "Coffee Mug",
       category: "Kitchenware",
-      description: "A ceramic mug for hot beverages.",
+      description: "A ceramic mug for hot beverages. ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
       price: 12.99,
       image_url: "https://t4.ftcdn.net/jpg/01/16/61/93/360_F_116619399_YA611bKNOW35ffK0OiyuaOcjAgXgKBui.jpg",
       create_at: "2025-03-10 10:00:00",

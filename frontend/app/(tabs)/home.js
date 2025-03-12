@@ -7,9 +7,26 @@ import {products, categories} from '../../data'
 import Feather from '@expo/vector-icons/Feather';
 import SearchArea from '@/components/SearchArea' 
 import Banner from '@/components/Banner'
-
+import { router } from 'expo-router'
+import { useCart } from '@/components/CartContext'
+import { useToast } from "react-native-toast-notifications";
+import { useNavigation } from '@react-navigation/native';
 const Home = () => {
+  const navigation = useNavigation();
+  const toast = useToast();
+  const {addToCart, cartItems} = useCart();
+  const addButton = (name) => {
+    addToCart(name, 1);
 
+    toast.show(`${name} added to cart`,{
+      duration: 3000,
+      placement: "bottom",
+      type: "success",
+      offset: 30,
+      animationType: "slide-in",
+    });
+    console.log(cartItems)
+};
   // const [products, setProducts] = useState(true)
 
   // useEffect(() => {
@@ -18,7 +35,6 @@ const Home = () => {
   return (
     <GestureHandlerRootView>
       <SafeAreaView className='h-full w-full rounded-2xl'>
-        // Why not put header here
         <FlatList
         horizontal = {false}
         numColumns={2}
@@ -29,7 +45,29 @@ const Home = () => {
           return (
             <View className='w-[48%] mt-2 bg-white p-2 flex justify-between rounded-2xl'>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('details', {
+                  name: item.name,
+                  image_url: item.image_url,
+                  description: item.description,
+                  price: String(item.price),
+                  category: item.category
+                });
+                // router.push({pathname: '/details', params: {
+                //   name: item.name,
+                //   image_url: item.image_url,
+                //   description : item.description,
+                //   price: String(item.price),
+                //   category: item.category
+                // }})
+                console.log({
+                  name: item.name,
+                  image_url: item.image_url,
+                  description: item.description,
+                  price: String(item.price),
+                  category: item.category
+                });
+              }}>
                 <Image className='w-full h-32 rounded-2xl ' source={{uri: item.image_url}} />
                 <Text className='text-[#242424] text-lg font-[Sora-SemiBold] ml-1 mt-2'>{item.name}</Text>
                 <Text className='text-[#A2A2A2] text-sm font-[Sora-Regular] ml-1 mt-2'>{item.category}</Text>
@@ -38,7 +76,9 @@ const Home = () => {
               <View className='flex-row justify-between ml-1 mt-4 mb-2'>
                 <Text className='text-[#050505] text-xl font-[Sora-SemiBold]'>${item.price}</Text>
                 
-                <TouchableOpacity className='bg-[#C67C4E] p-1 rounded-xl'>
+                <TouchableOpacity className='bg-[#C67C4E] p-1 rounded-xl'
+                onPress={() => addButton(item.name)}
+                >
                   <View>
                   <Feather name="plus" size={24} color="white" />
                   </View>
@@ -73,8 +113,6 @@ const Home = () => {
              )}
             />
             </View>
-              
-            
           </View>
         )}
         

@@ -1,5 +1,6 @@
 // _layout.js
 import React from 'react';
+// import { useFonts } from "expo-font";
 import { NativeWindStyleSheet } from 'nativewind';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,8 +14,10 @@ import Home from '../app/(tabs)/home';
 import Profile from '../app/(tabs)/profile';
 import Order from '../app/(tabs)/order';
 import Feather from '@expo/vector-icons/Feather';
-
-
+import DetailsPage from './details';
+import {CartProvider} from '@/components/CartContext'
+import {RootSiblingParent} from  'react-native-root-siblings'
+import { ToastProvider } from 'react-native-toast-notifications'
 // Thiết lập NativeWind để sử dụng với React Native
 NativeWindStyleSheet.setOutput({
   default: 'native',
@@ -23,7 +26,13 @@ NativeWindStyleSheet.setOutput({
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+
 const TabsNavigator = () => {
+  // const [fontsLoaded] = useFonts({
+  //   "Sora-Regular": require("../assets/fonts/Sora-Regular.ttf"),
+  //   "Sora-SemiBold": require("../assets/fonts/Sora-SemiBold.ttf"),
+  //   "Sora-Bold": require("../assets/fonts/Sora-Bold.ttf"),
+  // });
   return (
     <Tab.Navigator
      screenOptions = { {tabBarActiveTintColor: '#C67C4E'}}>
@@ -36,15 +45,22 @@ const TabsNavigator = () => {
 };
 const AppNavigator = () => {
   return (
-
+    <CartProvider>
+      <RootSiblingParent>
+      <ToastProvider>
+        
       <Stack.Navigator>
         <Stack.Screen name="Intro" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
         <Stack.Screen name='ForgotPassword' component={ForgotPasswordScreen} options={{ headerShown: false }} />
         <Stack.Screen name='Tabs' component={TabsNavigator}  options={{ headerShown: false }} />
+        <Stack.Screen name='details' component={DetailsPage} options={{ headerShown: true }} />
       </Stack.Navigator>
-
+      
+      </ToastProvider>
+      </RootSiblingParent>
+      </CartProvider>
   );
 };
 
